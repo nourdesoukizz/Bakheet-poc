@@ -2,6 +2,7 @@ import streamlit as st
 import sys
 import os
 import base64
+from data_loader import ForecastDataLoader
 
 # Add project root to Python path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,6 +48,22 @@ VALID_PASSWORD = "demo123"
 def authenticate(username: str, password: str) -> bool:
     """Authenticate user with hardcoded credentials"""
     return username == VALID_USERNAME and password == VALID_PASSWORD
+
+@st.cache_data
+def load_forecast_data():
+    """Load and cache the consolidated forecast data"""
+    try:
+        loader = ForecastDataLoader()
+        consolidated_data = loader.consolidate_data()
+        
+        if not consolidated_data or not consolidated_data.get("items"):
+            st.error("❌ No forecast data found. Please check outputs/test_results directory.")
+            return None
+            
+        return consolidated_data
+    except Exception as e:
+        st.error(f"❌ Error loading forecast data: {e}")
+        return None
 
 def show_authentication_page():
     """Display the beautiful authentication/login page"""
@@ -109,14 +126,14 @@ def show_authentication_page():
         animation: pulse 4s ease-in-out infinite;
     }
     
-    /* Login container */
+    /* Main login container - transparent with glassmorphism */
     .login-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 3rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 3rem 2rem;
         margin: 2rem auto;
         max-width: 500px;
         position: relative;
@@ -135,71 +152,139 @@ def show_authentication_page():
     }
     
     .title-text {
-        background: linear-gradient(135deg, #4460ef, #764ba2);
+        background: linear-gradient(135deg, #ffffff, #f0f0f0);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         font-weight: bold;
         text-align: center;
         margin: 1rem 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
     
     .subtitle-text {
-        color: #666;
+        color: rgba(255, 255, 255, 0.9);
         text-align: center;
         font-size: 1.1rem;
         margin-bottom: 2rem;
-    }
-    
-    /* Form styling */
-    .stTextInput > div > div > input {
-        border-radius: 10px;
-        border: 2px solid #e1e5e9;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-    
-    .stTextInput > div > div > input:focus {
-        border-color: #4460ef;
-        box-shadow: 0 0 0 3px rgba(68, 96, 239, 0.1);
-    }
-    
-    /* Button styling */
-    .stButton > button {
-        background: linear-gradient(135deg, #4460ef, #764ba2);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 0.75rem 2rem;
-        font-size: 1.1rem;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        width: 100%;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(68, 96, 239, 0.3);
-    }
-    
-    .demo-credentials {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border-radius: 10px;
-        padding: 1rem;
-        margin-top: 1.5rem;
-        border-left: 4px solid #4460ef;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
     
     .ai-badge {
         display: inline-block;
-        background: linear-gradient(135deg, #4460ef, #764ba2);
+        background: rgba(255, 255, 255, 0.2);
         color: white;
         padding: 0.5rem 1rem;
         border-radius: 20px;
         font-size: 0.9rem;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-title {
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Input field styling */
+    .stTextInput > div > div > input {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+        color: white !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    .stTextInput > div > div > input::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: rgba(255, 255, 255, 0.6) !important;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .stTextInput > label {
+        color: white !important;
+        font-weight: 500 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)) !important;
+        color: white !important;
+        border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 2rem !important;
+        font-size: 1.1rem !important;
+        font-weight: bold !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        backdrop-filter: blur(10px) !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2)) !important;
+        border-color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
+    .demo-credentials {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .demo-credentials strong {
+        color: rgba(255, 255, 255, 0.95);
+    }
+    
+    .demo-credentials small {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    /* Success/Error message styling */
+    .stSuccess {
+        background: rgba(76, 175, 80, 0.2) !important;
+        border: 1px solid rgba(76, 175, 80, 0.4) !important;
+        backdrop-filter: blur(10px) !important;
+        color: white !important;
+        border-radius: 12px !important;
+    }
+    
+    .stError {
+        background: rgba(244, 67, 54, 0.2) !important;
+        border: 1px solid rgba(244, 67, 54, 0.4) !important;
+        backdrop-filter: blur(10px) !important;
+        color: white !important;
+        border-radius: 12px !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -232,7 +317,7 @@ def show_authentication_page():
         if logo_svg:
             st.markdown(f'<div class="logo-container">{logo_svg}</div>', unsafe_allow_html=True)
         else:
-            st.markdown('<div class="logo-container"><h1 style="color: #4460ef;">SEELOZ</h1></div>', unsafe_allow_html=True)
+            st.markdown('<div class="logo-container"><h1 style="color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">SEELOZ</h1></div>', unsafe_allow_html=True)
         
         # AI Badge
         st.markdown('<div style="text-align: center;"><span class="ai-badge">🧠 AI-Powered Demand Forecasting</span></div>', unsafe_allow_html=True)
@@ -241,9 +326,11 @@ def show_authentication_page():
         st.markdown('<h1 class="title-text">Demand Forecast Planner</h1>', unsafe_allow_html=True)
         st.markdown('<p class="subtitle-text">Advanced Machine Learning Analytics Platform</p>', unsafe_allow_html=True)
         
-        # Login form
+        # Login form in glassmorphic container
+        st.markdown('<div class="form-section">', unsafe_allow_html=True)
+        st.markdown('<div class="form-title">🔐 Secure Access</div>', unsafe_allow_html=True)
+        
         with st.form("login_form"):
-            st.markdown("### 🔐 Secure Access")
             username = st.text_input("👤 Username", placeholder="Enter your username")
             password = st.text_input("🔑 Password", type="password", placeholder="Enter your password")
             
@@ -260,6 +347,8 @@ def show_authentication_page():
                 else:
                     st.error("❌ Access denied. Please check your credentials.")
         
+        st.markdown('</div>', unsafe_allow_html=True)  # Close form-section
+        
         # Demo credentials
         st.markdown("""
         <div class="demo-credentials">
@@ -270,10 +359,10 @@ def show_authentication_page():
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)  # Close login-container
 
 def show_dashboard_page():
-    """Display the main dashboard with 3 boxes and RUN button"""
+    """Display the main dashboard with data loading"""
     # Header
     st.markdown("""
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -287,50 +376,96 @@ def show_dashboard_page():
     
     st.markdown("---")
     
-    # Main content area
-    st.markdown("### Configuration")
+    # Load forecast data
+    forecast_data = load_forecast_data()
     
-    # Three information boxes in columns
-    col1, col2, col3 = st.columns(3)
+    if forecast_data:
+        # Show data summary
+        items_count = len(forecast_data["items"])
+        algorithms_count = len(forecast_data["metadata"]["algorithms_loaded"])
+        
+        # Update the configuration boxes with real data
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown(f"""
+            <div style="padding: 1.5rem; border: 2px solid #1f77b4; border-radius: 10px; text-align: center; background-color: #f8f9fa;">
+                <h3 style="color: #1f77b4; margin: 0 0 0.5rem 0;">Client</h3>
+                <h2 style="color: #333; margin: 0;">Bakheet</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+            <div style="padding: 1.5rem; border: 2px solid #1f77b4; border-radius: 10px; text-align: center; background-color: #f8f9fa;">
+                <h3 style="color: #1f77b4; margin: 0 0 0.5rem 0;"> Years Trained</h3>
+                <h2 style="color: #333; margin: 0;"> 5 years </h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown("""
+            <div style="padding: 1.5rem; border: 2px solid #1f77b4; border-radius: 10px; text-align: center; background-color: #f8f9fa;">
+                <h3 style="color: #1f77b4; margin: 0 0 0.5rem 0;">Forecast Period</h3>
+                <h2 style="color: #333; margin: 0;"> 12 Months</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Store data in session state for next page
+        st.session_state.forecast_data = forecast_data
+        
+    else:
+        # Show error state
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("""
+            <div style="padding: 1.5rem; border: 2px solid #dc3545; border-radius: 10px; text-align: center; background-color: #f8d7da;">
+                <h3 style="color: #dc3545; margin: 0 0 0.5rem 0;">Data Status</h3>
+                <h2 style="color: #721c24; margin: 0;">Error</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div style="padding: 1.5rem; border: 2px solid #6c757d; border-radius: 10px; text-align: center; background-color: #e2e3e5;">
+                <h3 style="color: #6c757d; margin: 0 0 0.5rem 0;">Items</h3>
+                <h2 style="color: #383d41; margin: 0;">0</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown("""
+            <div style="padding: 1.5rem; border: 2px solid #6c757d; border-radius: 10px; text-align: center; background-color: #e2e3e5;">
+                <h3 style="color: #6c757d; margin: 0 0 0.5rem 0;">Status</h3>
+                <h2 style="color: #383d41; margin: 0;">No Data</h2>
+            </div>
+            """, unsafe_allow_html=True)
     
-    with col1:
-        st.markdown("""
-        <div style="padding: 1.5rem; border: 2px solid #1f77b4; border-radius: 10px; text-align: center; background-color: #f8f9fa;">
-            <h3 style="color: #1f77b4; margin: 0 0 0.5rem 0;">Client</h3>
-            <h2 style="color: #333; margin: 0;">Bakheet</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div style="padding: 1.5rem; border: 2px solid #1f77b4; border-radius: 10px; text-align: center; background-color: #f8f9fa;">
-            <h3 style="color: #1f77b4; margin: 0 0 0.5rem 0;">Train on Past Period</h3>
-            <h2 style="color: #333; margin: 0;">5 Years</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown("""
-        <div style="padding: 1.5rem; border: 2px solid #1f77b4; border-radius: 10px; text-align: center; background-color: #f8f9fa;">
-            <h3 style="color: #1f77b4; margin: 0 0 0.5rem 0;">Forecast Period</h3>
-            <h2 style="color: #333; margin: 0;">12 Months</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # RUN button centered below the boxes
+    # RUN button (only enabled if data is loaded)
     st.markdown("<br>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([2, 1, 2])
     with col2:
-        if st.button("🚀 RUN", use_container_width=True, type="primary"):
+        if st.button("🚀 RUN", use_container_width=True, type="primary", disabled=(forecast_data is None)):
             st.session_state.current_page = 'forecast_details'
-            st.success("✅ Running forecasting algorithms...")
+            st.success("✅ Loading forecast results...")
             st.rerun()
     
-    # Logout button at the bottom
+    # Show data loading instructions if no data
+    if forecast_data is None:
+        st.markdown("---")
+        st.markdown("### 📋 Data Loading Instructions")
+        st.markdown("""
+        1. **Check data directory**: Ensure `outputs/test_results/` contains CSV files
+        2. **Required files**: `LSTM_detailed_forecasts_*.csv`, `Prophet_detailed_forecasts_*.csv`, etc.
+        3. **Run data loader**: `python streamlit_app/data_loader.py` from terminal
+        4. **Refresh page**: Reload this page after fixing data issues
+        """)
+    
+    # Logout button
     st.markdown("<br><br>", unsafe_allow_html=True)
     if st.button("🚪 Logout", type="secondary"):
-        # Clear session state
         st.session_state.authenticated = False
         st.session_state.current_page = 'auth'
         st.session_state.username = ''
