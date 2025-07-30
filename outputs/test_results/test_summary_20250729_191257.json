@@ -1,0 +1,80 @@
+{
+  "SARIMA": {
+    "status": "success",
+    "execution_time": "0:00:02.348943",
+    "validation": {
+      "algorithm": "SARIMA",
+      "total_items": 4,
+      "items_with_12_forecasts": 4,
+      "items_with_errors": 0,
+      "forecast_length_distribution": {
+        "12": 4
+      }
+    }
+  },
+  "SBA": {
+    "status": "success",
+    "execution_time": "0:00:00.033176",
+    "validation": {
+      "algorithm": "SBA",
+      "total_items": 4,
+      "items_with_12_forecasts": 4,
+      "items_with_errors": 0,
+      "forecast_length_distribution": {
+        "12": 4
+      }
+    }
+  },
+  "Random_Forest": {
+    "status": "success",
+    "execution_time": "0:00:01.058301",
+    "validation": {
+      "algorithm": "Random_Forest",
+      "total_items": 4,
+      "items_with_12_forecasts": 4,
+      "items_with_errors": 0,
+      "forecast_length_distribution": {
+        "12": 4
+      }
+    }
+  },
+  "XGBoost": {
+    "status": "success",
+    "execution_time": "0:00:01.253723",
+    "validation": {
+      "algorithm": "XGBoost",
+      "total_items": 4,
+      "items_with_12_forecasts": 4,
+      "items_with_errors": 0,
+      "forecast_length_distribution": {
+        "12": 4
+      }
+    }
+  },
+  "LSTM": {
+    "status": "success",
+    "execution_time": "0:00:57.162778",
+    "validation": {
+      "algorithm": "LSTM",
+      "total_items": 4,
+      "items_with_12_forecasts": 4,
+      "items_with_errors": 0,
+      "forecast_length_distribution": {
+        "12": 4
+      }
+    }
+  },
+  "Prophet": {
+    "status": "success",
+    "execution_time": "0:00:05.307122",
+    "validation": {
+      "algorithm": "Prophet",
+      "total_items": 4,
+      "items_with_12_forecasts": 4,
+      "items_with_errors": 0,
+      "forecast_length_distribution": {
+        "12": 4
+      }
+    }
+  }
+}

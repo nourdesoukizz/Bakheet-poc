@@ -1,0 +1,8 @@
+Item_ID,Item_Name,Category,Historical_Total,SARIMA_Annual_Forecast,SARIMA_Monthly_Avg,SBA_Annual_Forecast,SBA_Monthly_Avg,Random_Forest_Annual_Forecast,Random_Forest_Monthly_Avg,XGBoost_Annual_Forecast,XGBoost_Monthly_Avg,LSTM_Annual_Forecast,LSTM_Monthly_Avg,Prophet_Annual_Forecast,Prophet_Monthly_Avg
+02043673,"FULE FILTER HD3411(2308847)
+ ق...",Parts,1858,435.9,36.33,433.35,36.11,760.77,63.4,428.77,35.73,230.05,19.17,950.6,79.22
+2028019,RUBBER PADS WITH SCREW&NUT (23...,Parts,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+46.1030.2106,"SCREW (46.1824.2066) S-1500
+مس...",Parts,1593,0.0,0.0,359.18,29.93,1105.58,92.13,226.19,18.85,334.98,27.92,384.9,32.07
+46.1030.2107,"NUT S1500&S2500
+صامولة",Parts,1589,0.0,0.0,358.64,29.89,1112.93,92.74,225.31,18.78,0.0,0.0,385.99,32.17
