@@ -149,6 +149,7 @@ outputs/plots/*.pdf
 outputs/reports/*.html
 outputs/reports/*.pdf
 
+
 # Machine Learning / Deep Learning specific
 *.h5
 *.hdf5
@@ -163,6 +164,7 @@ logs/
 tensorboard_logs/
 mlruns/
 wandb/
+
 
 # XGBoost specific
 *.buffer
@@ -182,8 +184,7 @@ wandb/
 optuna_studies/
 *.db
 
-# Prophet specific
-*.json
+
 
 # Streamlit specific
 .streamlit/
